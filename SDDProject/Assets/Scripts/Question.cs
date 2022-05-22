@@ -45,9 +45,14 @@ public class Question
         solution = n;
     }
 
-    public bool CheckAnswer()
+    public bool CheckAnswer(int n)
     {
         // (not finished) add: if button's choice == solution, isCorrect = true; else isCorrect = false
+        if (n == solution)
+            isCorrect = true;
+        else
+            isCorrect = false;
+
         return isCorrect;
     }
 

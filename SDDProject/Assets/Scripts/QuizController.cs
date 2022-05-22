@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuizController : MonoBehaviour
 {
@@ -10,6 +11,13 @@ public class QuizController : MonoBehaviour
     private int score;
     [SerializeField] private float timer = 20f;
     private bool timerIsActive;
+    [SerializeField] private Text questionText;
+    [SerializeField] private Text choiceAText;
+    [SerializeField] private Text choiceBText;
+    [SerializeField] private Text choiceCText;
+    [SerializeField] private Text choiceDText;
+    [SerializeField] private Text scoreText;
+    private bool choicesAreActive;
 
     void Start()
     {
@@ -31,7 +39,7 @@ public class QuizController : MonoBehaviour
         }
     }
 
-    private void ReadFile()
+    public void ReadFile()
     {
         string path = "Assets/Files/SDDProjectMCFile.txt"; // can be found in the editor
         StreamReader sR = new StreamReader(path); // setup StreamReader which will read .txt file from path
@@ -77,7 +85,7 @@ public class QuizController : MonoBehaviour
         }
     }
 
-    private void ShuffleChoices(ref string[] items) // shuffle choices for randomness
+    public void ShuffleChoices(ref string[] items) // shuffle choices for randomness
     {
         for (int i = 0; i < items.Length - 1; i++)
         {
@@ -91,7 +99,7 @@ public class QuizController : MonoBehaviour
         }
     }
 
-    private void ShuffleQuestions(ref List<Question> questions) // shuffle questions for randomness
+    public void ShuffleQuestions(ref List<Question> questions) // shuffle questions for randomness
     {
         for (int i = 0; i < questions.Count; i++)
         {
@@ -105,41 +113,54 @@ public class QuizController : MonoBehaviour
         }
     }
 
-    private void Answer()  // choice button onClick() triggers this function
+    public void Answer(int n)  // choice button onClick() triggers this function
     {
-        if (questions[currentQuestion - 1].CheckAnswer())
+        if (choicesAreActive) // prevents spamming of score
         {
-            score++;
-            // (not finished) add: ui showing "correct"
-        }
-        else
-        {
-            // (not finished) add: ui showing "incorrect" and the solution
+            if (questions[currentQuestion - 1].CheckAnswer(n))
+            {
+                score++;
+                scoreText.text = score.ToString("000");
+                // (not finished) add: ui showing "correct"
+            }
+            else
+            {
+                // (not finished) add: ui showing "incorrect" and the solution
+            }
         }
 
         ShowNextQuestion();
     }
 
-    private void ShowNextQuestion()
+    public void ShowNextQuestion()
     {
-        if (currentQuestion <= questions.Count) // if there are unanswered questions, show next question
+        if (currentQuestion < questions.Count) // if there are unanswered questions, show next question
         {
             currentQuestion++;
+
+            questionText.text = questions[currentQuestion - 1].GetQuestion();
+            choiceAText.text = questions[currentQuestion - 1].GetChoiceAt(0);
+            choiceBText.text = questions[currentQuestion - 1].GetChoiceAt(1);
+            choiceCText.text = questions[currentQuestion - 1].GetChoiceAt(2);
+            choiceDText.text = questions[currentQuestion - 1].GetChoiceAt(3);
+
             timerIsActive = true; // start countdown timer
-            // (not finished) add: ui showing next question
         }
         else // if all questions are answered
         {
             // (not finished) add: ui showing "game ended" + score screen maybe
+            choicesAreActive = false;
+            Debug.Log("game ended"); // will be removed
         }
     }
 
-    private void Setup() // play again button onClick() triggers this function (if applicable)
+    public void Setup() // play again button onClick() triggers this function (if applicable)
     {
         questions = new List<Question>();
         currentQuestion = 0;
         score = 0;
         timerIsActive = false;
+        choicesAreActive = true;
         ReadFile();
     }
 }

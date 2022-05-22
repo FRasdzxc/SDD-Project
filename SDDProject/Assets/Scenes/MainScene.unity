@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 553884737}
   - component: {fileID: 553884736}
   - component: {fileID: 553884735}
+  - component: {fileID: 553884738}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -347,6 +348,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &553884738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553884734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3a56597deb8dc242b6bec3c1feb1974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timer: 20
+  questionText: {fileID: 1932179261}
+  choiceAText: {fileID: 1784774822}
+  choiceBText: {fileID: 1234957677}
+  choiceCText: {fileID: 1134466922}
+  choiceDText: {fileID: 1335224789}
+  scoreText: {fileID: 844818959}
 --- !u!1 &712490769
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,7 +723,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1222512882}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 553884738}
+        m_TargetAssemblyTypeName: QuizController, Assembly-CSharp
+        m_MethodName: Answer
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1222512882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -903,7 +935,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1246119946}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 553884738}
+        m_TargetAssemblyTypeName: QuizController, Assembly-CSharp
+        m_MethodName: Answer
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1246119946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1138,7 +1182,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1406174343}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 553884738}
+        m_TargetAssemblyTypeName: QuizController, Assembly-CSharp
+        m_MethodName: Answer
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1406174343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1808,12 +1864,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2017565227}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3a56597deb8dc242b6bec3c1feb1974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timer: 20
+  questionText: {fileID: 1932179261}
+  choiceAText: {fileID: 1784774822}
+  choiceBText: {fileID: 1234957677}
+  choiceCText: {fileID: 1134466922}
+  choiceDText: {fileID: 1335224789}
+  scoreText: {fileID: 844818959}
 --- !u!4 &2017565229
 Transform:
   m_ObjectHideFlags: 0
@@ -1910,7 +1972,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2128923149}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 553884738}
+        m_TargetAssemblyTypeName: QuizController, Assembly-CSharp
+        m_MethodName: Answer
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2128923149
 MonoBehaviour:
   m_ObjectHideFlags: 0
