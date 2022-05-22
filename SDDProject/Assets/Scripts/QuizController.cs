@@ -6,11 +6,29 @@ using UnityEngine;
 public class QuizController : MonoBehaviour
 {
     private List<Question> questions;
+    private int currentQuestion;
+    private int score;
+    [SerializeField] private float timer = 20f;
+    private bool timerIsActive;
 
-    // Start is called before the first frame update
     void Start()
     {
         Setup();
+    }
+
+    void Update()
+    {
+        if (timerIsActive) // if timer is Active, countdown happens
+        {
+            timer -= Time.deltaTime;
+        }
+
+        if (timer <= 0f) // if timer reaches 0, timer will be reset and next question will be shown
+        {
+            timerIsActive = false;
+            timer = 20f;
+            ShowNextQuestion();
+        }
     }
 
     private void ReadFile()
@@ -30,7 +48,7 @@ public class QuizController : MonoBehaviour
 
             for (int i = 1; i < items.Length; i++) // set choices to Question
             {
-                if (items[i].EndsWith("*")) // the solution
+                if (items[i].EndsWith("*")) // if the item ends with "*", it is the solution
                 {
                     questions[questions.Count - 1].SetChoice(items[i].Remove(items[i].Length - 1));
                     questions[questions.Count - 1].SetSolution(i - 1); // i - 1 because items[0] is not included
@@ -44,6 +62,7 @@ public class QuizController : MonoBehaviour
         sR.Close();
 
         ShuffleQuestions(ref questions);
+        ShowNextQuestion();
 
         // Debug.Log() - will be removed
         {
@@ -86,9 +105,41 @@ public class QuizController : MonoBehaviour
         }
     }
 
-    private void Setup()
+    private void Answer()  // choice button onClick() triggers this function
+    {
+        if (questions[currentQuestion - 1].CheckAnswer())
+        {
+            score++;
+            // (not finished) add: ui showing "correct"
+        }
+        else
+        {
+            // (not finished) add: ui showing "incorrect" and the solution
+        }
+
+        ShowNextQuestion();
+    }
+
+    private void ShowNextQuestion()
+    {
+        if (currentQuestion <= questions.Count) // if there are unanswered questions, show next question
+        {
+            currentQuestion++;
+            timerIsActive = true; // start countdown timer
+            // (not finished) add: ui showing next question
+        }
+        else // if all questions are answered
+        {
+            // (not finished) add: ui showing "game ended" + score screen maybe
+        }
+    }
+
+    private void Setup() // play again button onClick() triggers this function (if applicable)
     {
         questions = new List<Question>();
+        currentQuestion = 0;
+        score = 0;
+        timerIsActive = false;
         ReadFile();
     }
 }

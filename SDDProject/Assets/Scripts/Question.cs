@@ -45,10 +45,10 @@ public class Question
         solution = n;
     }
 
-    public bool Answer() // onClick() triggers this function
+    public bool CheckAnswer()
     {
-        // (not finished) add: if button's choice == solution, return true;
-        return false;
+        // (not finished) add: if button's choice == solution, isCorrect = true; else isCorrect = false
+        return isCorrect;
     }
 
     public void Setup()
