@@ -8,6 +8,4 @@ public class Basic : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
-
-    public void 
 }
