@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,13 +10,12 @@ public class QuizController : MonoBehaviour
     private List<Question> questions;
     private int currentQuestion;
     private int score;
-    [SerializeField] private float timer = 20f;
+    [SerializeField] private Timer timerSlider;
+    [SerializeField] private float timer = 30f;
     private bool timerIsActive;
     [SerializeField] private Text questionText;
-    [SerializeField] private Text choiceAText;
-    [SerializeField] private Text choiceBText;
-    [SerializeField] private Text choiceCText;
-    [SerializeField] private Text choiceDText;
+    [SerializeField] private Button[] choices;
+    private Text[] choiceText;
     [SerializeField] private Text scoreText;
     private bool choicesAreActive;
 
@@ -34,7 +34,7 @@ public class QuizController : MonoBehaviour
         if (timer <= 0f) // if timer reaches 0, timer will be reset and next question will be shown
         {
             timerIsActive = false;
-            timer = 20f;
+            timer = 30f;
             ShowNextQuestion();
         }
     }
@@ -59,7 +59,7 @@ public class QuizController : MonoBehaviour
                 if (items[i].EndsWith("*")) // if the item ends with "*", it is the solution
                 {
                     questions[questions.Count - 1].SetChoice(items[i].Remove(items[i].Length - 1));
-                    questions[questions.Count - 1].SetSolution(i - 1); // i - 1 because items[0] is not included
+                    questions[questions.Count - 1].SetSolution(i - 1); // i - 1 because items[0] (the question) is not included
                 }
                 else
                     questions[questions.Count - 1].SetChoice(items[i]);
@@ -74,13 +74,11 @@ public class QuizController : MonoBehaviour
 
         // Debug.Log() - will be removed
         {
-            Debug.Log("This is just a test, the questions are not final");
-            Debug.Log("questions.Count = " + questions.Count);
+            Debug.Log("No. of questions = " + questions.Count);
 
             for (int i = 0; i < questions.Count; i++)
             {
-                Debug.Log("question " + (i + 1) + " = " + questions[i].GetQuestion());
-                Debug.Log("solution " + (i + 1) + " = " + questions[i].GetSolution() + " which is " + questions[i].GetChoiceAt(questions[i].GetSolution()));
+                Debug.Log("Q" + (i + 1) + " solution = " + (char)(questions[i].GetSolution() + 65));
             }
         }
     }
@@ -113,7 +111,7 @@ public class QuizController : MonoBehaviour
         }
     }
 
-    public void Answer(int n)  // choice button onClick() triggers this function
+    public async void Answer(int n)  // choice button onClick() triggers this function
     {
         if (choicesAreActive) // prevents spamming of score
         {
@@ -121,15 +119,25 @@ public class QuizController : MonoBehaviour
             {
                 score++;
                 scoreText.text = score.ToString("000");
-                // (not finished) add: ui showing "correct"
+
+                choices[n].GetComponent<Image>().color = new Color32(200, 255, 200, 255); // correct answer is marked in green
+
+                Time.timeScale = 0;
+                await Task.Delay(1000); // pause and wait for 1 second to show correct answer
+                Time.timeScale = 1;
             }
             else
             {
-                // (not finished) add: ui showing "incorrect" and the solution
+                choices[n].GetComponent<Image>().color = new Color32(255, 200, 200, 255); // wrong answer is marked in red
+                choices[questions[currentQuestion - 1].GetSolution()].GetComponent<Image>().color = new Color32(200, 255, 200, 255); // correct answer is marked in green
+
+                Time.timeScale = 0;
+                await Task.Delay(1000); // pause and wait for 1 second to show correct answer
+                Time.timeScale = 1;
             }
         }
 
-        ShowNextQuestion();
+        timer = 0f;
     }
 
     public void ShowNextQuestion()
@@ -138,19 +146,25 @@ public class QuizController : MonoBehaviour
         {
             currentQuestion++;
 
-            questionText.text = questions[currentQuestion - 1].GetQuestion();
-            choiceAText.text = questions[currentQuestion - 1].GetChoiceAt(0);
-            choiceBText.text = questions[currentQuestion - 1].GetChoiceAt(1);
-            choiceCText.text = questions[currentQuestion - 1].GetChoiceAt(2);
-            choiceDText.text = questions[currentQuestion - 1].GetChoiceAt(3);
+            questionText.text = currentQuestion + ". " + questions[currentQuestion - 1].GetQuestion();
+            for (int i = 0; i < choiceText.Length; i++)
+            {
+                choices[i].GetComponent<Image>().color = new Color32(255, 255, 255, 255); // reset choice button Image Color to white
+                choiceText[i].text = (char)(65 + i) + ". " + questions[currentQuestion - 1].GetChoiceAt(i); // eg A. Banana
+            }
 
+            timerSlider.resetTimer();
             timerIsActive = true; // start countdown timer
         }
         else // if all questions are answered
         {
             // (not finished) add: ui showing "game ended" + score screen maybe
+            timerSlider.pauseTimer();
+            timerIsActive = false;
             choicesAreActive = false;
-            Debug.Log("game ended"); // will be removed
+
+            Debug.Log("Game ended"); // will be removed
+            Debug.Log("Score = " + score + "/" + questions.Count); // will be removed
         }
     }
 
@@ -161,6 +175,11 @@ public class QuizController : MonoBehaviour
         score = 0;
         timerIsActive = false;
         choicesAreActive = true;
+        choiceText = new Text[4];
+        for (int i = 0; i < choiceText.Length; i++) // store Text component of buttons
+        {
+            choiceText[i] = choices[i].transform.Find("Text").GetComponent<Text>(); // get button's child (Text)'s Text component
+        }
         ReadFile();
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour
 {
     private bool status = true;
-    public float myTimer = 20f;
+    public float myTimer = 30f;
     public Slider slider;
     Text text;
     // Start is called before the first frame update
@@ -30,7 +30,7 @@ public class Timer : MonoBehaviour
     }
     public void resetTimer()
     {
-        myTimer = 20f;
+        myTimer = 30f;
         status = true;
     }
     public void pauseTimer()
