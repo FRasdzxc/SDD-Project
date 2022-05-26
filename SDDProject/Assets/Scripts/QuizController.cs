@@ -18,10 +18,25 @@ public class QuizController : MonoBehaviour
     private Text[] choiceText;
     [SerializeField] private Text scoreText;
     private bool choicesAreActive;
+    [SerializeField] private GameObject mainPanel;
+    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject endPanel;
+    [SerializeField] private Text playerName;
+    [SerializeField] private Text endScore;
 
     void Start()
     {
-        Setup();
+        questions = new List<Question>();
+        currentQuestion = 0;
+        score = 0;
+        timerIsActive = false;
+        choicesAreActive = true;
+        choiceText = new Text[4];
+        for (int i = 0; i < choiceText.Length; i++) // store Text component of buttons
+        {
+            choiceText[i] = choices[i].transform.Find("Text").GetComponent<Text>(); // get button's child (Text)'s Text component
+        }
+        ReadFile();
     }
 
     void Update()
@@ -72,14 +87,18 @@ public class QuizController : MonoBehaviour
         ShuffleQuestions(ref questions);
         ShowNextQuestion();
 
-        // Debug.Log() - will be removed
+        // Debug.Log()
         {
-            Debug.Log("No. of questions = " + questions.Count);
+            Debug.Log(questions.Count + " Questions");
 
+            string soln = "";
             for (int i = 0; i < questions.Count; i++)
             {
-                Debug.Log("Q" + (i + 1) + " solution = " + (char)(questions[i].GetSolution() + 65));
+                soln += (i + 1);
+                soln += ((char)(questions[i].GetSolution() + 65));
+                soln += " ";
             }
+            Debug.Log(soln);
         }
     }
 
@@ -117,27 +136,29 @@ public class QuizController : MonoBehaviour
         {
             if (questions[currentQuestion - 1].CheckAnswer(n))
             {
-                score++;
+                score +=  1 * 10; // each question scores 10
                 scoreText.text = score.ToString("000");
 
                 choices[n].GetComponent<Image>().color = new Color32(200, 255, 200, 255); // correct answer is marked in green
 
-                Time.timeScale = 0;
+                timerSlider.pauseTimer();
+                timerIsActive = false;
+                choicesAreActive = false;
                 await Task.Delay(1000); // pause and wait for 1 second to show correct answer
-                Time.timeScale = 1;
+                ShowNextQuestion();
             }
             else
             {
                 choices[n].GetComponent<Image>().color = new Color32(255, 200, 200, 255); // wrong answer is marked in red
                 choices[questions[currentQuestion - 1].GetSolution()].GetComponent<Image>().color = new Color32(200, 255, 200, 255); // correct answer is marked in green
 
-                Time.timeScale = 0;
+                timerSlider.pauseTimer();
+                timerIsActive = false;
+                choicesAreActive = false;
                 await Task.Delay(1000); // pause and wait for 1 second to show correct answer
-                Time.timeScale = 1;
+                ShowNextQuestion();
             }
         }
-
-        timer = 0f;
     }
 
     public void ShowNextQuestion()
@@ -155,6 +176,7 @@ public class QuizController : MonoBehaviour
 
             timerSlider.resetTimer();
             timerIsActive = true; // start countdown timer
+            choicesAreActive = true;
         }
         else // if all questions are answered
         {
@@ -163,23 +185,25 @@ public class QuizController : MonoBehaviour
             timerIsActive = false;
             choicesAreActive = false;
 
-            Debug.Log("Game ended"); // will be removed
-            Debug.Log("Score = " + score + "/" + questions.Count); // will be removed
+            mainPanel.SetActive(false);
+            endScore.text = score + "/" + (questions.Count * 10);
+            endPanel.SetActive(true);
+
+            Debug.Log(score + "/" + questions.Count * 10);
         }
     }
 
-    public void Setup() // play again button onClick() triggers this function (if applicable)
+    public void Pause() // MainPanel PauseButton triggers this function
     {
-        questions = new List<Question>();
-        currentQuestion = 0;
-        score = 0;
-        timerIsActive = false;
-        choicesAreActive = true;
-        choiceText = new Text[4];
-        for (int i = 0; i < choiceText.Length; i++) // store Text component of buttons
-        {
-            choiceText[i] = choices[i].transform.Find("Text").GetComponent<Text>(); // get button's child (Text)'s Text component
-        }
-        ReadFile();
+        Time.timeScale = 0;
+        mainPanel.SetActive(false);
+        pausePanel.SetActive(true);
+    }
+
+    public void Resume() // MainPanel PauseButton triggers this function
+    {
+        Time.timeScale = 1;
+        mainPanel.SetActive(true);
+        pausePanel.SetActive(false);
     }
 }
