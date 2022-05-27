@@ -56,7 +56,8 @@ public class QuizController : MonoBehaviour
 
     public void ReadFile()
     {
-        string path = "Assets/Files/SDDProjectMCFile.txt"; // can be found in the editor
+        //string path = "Assets/Files/SDDProjectMCFile.txt"; // test .txt file: can be found in the "Files" folder of the editor
+        string path = Application.dataPath + "/StreamingAssets/SDDProjectMCFile.txt"; // build .txt file: can be found in the project file
         StreamReader sR = new StreamReader(path); // setup StreamReader which will read .txt file from path
 
         string line = sR.ReadLine();
@@ -180,12 +181,12 @@ public class QuizController : MonoBehaviour
         }
         else // if all questions are answered
         {
-            // (not finished) add: ui showing "game ended" + score screen maybe
             timerSlider.pauseTimer();
             timerIsActive = false;
             choicesAreActive = false;
 
             mainPanel.SetActive(false);
+            playerName.text = PlayerPrefs.GetString("playerName");
             endScore.text = score + "/" + (questions.Count * 10);
             endPanel.SetActive(true);
 
